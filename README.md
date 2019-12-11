@@ -1,6 +1,6 @@
 # Bachelor Thesis Sil de Graaf.
 Training two transformer models NL-EN/ZH-EN in combination with the use of BPE to look which of these two source languages
-(Dutch and Chinese) is more brittle to synthetic noise.
+(Dutch vs Chinese) is more brittle to synthetic noise.
 
 
 # Requirements
@@ -165,7 +165,7 @@ In the virtual environment install the following modules.
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_dat
 a preprocessed -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess
 
-# STEP 10 - Creating a Batch file
+# STEP 10 - Creating a Batch File
 
 \#!/bin/bash \
 \#SBATCH --job-name="nl-en" \
@@ -190,23 +190,59 @@ module load Python \
 
 sbatch script.sh
 
-# STEP 12 - Translating
+# STEP 12 - Create a Batch File
 
-python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt -src test.src -tgt test.tgt -replace_unk -output nl-en.pred.atok
+#!/bin/bash\
+\#SBATCH --job-name="translate-nl-en"\
+\#SBATCH --time=00:10:00\
+\#SBATCH --ntasks=1\
+\#SBATCH --mem=10GB\
+\#SBATCH --partition=gpu\
+\#SBATCH --gres=gpu:v100:1\
+\#SBATCH --mail-type=ALL\
+\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+
+source thesis-env/bin/activate\
+module load Python\
+\# pip install --upgrade pip\
+\# pip install torch\
+\# pip install torchvision\
+\# pip install torchtext\
+\# pip install configargparse\
+\# pip install OpenNMT-py
+
+
+export CUDA_VISIBLE_DEVICES=0
+
+python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt \
+-src test.src -tgt test.tgt -replace_unk -output nl-en3.pred.atok
+
+
+# STEP 13 - Translate
+
+sbatch script2.sh
 
 # STEP 13 - Obtaining BLEU-scores for clean texts
 
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/generic/multi-bleu.perl
 
-perl multi-bleu.perl test.tgt < nl-en.pred.atok
+perl multi-bleu.perl test.tgt < nl-en3.pred.atok
 
 # STEP 14 - Creating synthetic noise
 
+
+
 # STEP 15 - Obtaining BLEU-scores for noisy texts
+
+
 
 # STEP 16 - Compare BLEU scores of STEP 13 and 15
 
+
+
 # STEP 17 - repeat STEP 2-4 & STEP 8-16 for Chinese -> English
+
+
 
 # STEP 18 - Compare Dutch -> English & Chinese -> English
 
