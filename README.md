@@ -286,12 +286,24 @@ $ sed -i.bak '/^<title>.*title>$/d' test.en.xml
 
 
 
-# STEP 19 - 
+# STEP 19 - Converting XML files (dev/test) to text (Chinese -> English)
+
+
 
 # STEP 20 -
 
+# STEP 21 -
 
-# STEP  - Compare Dutch -> English & Chinese -> English
+# STEP 22 -
+
+# STEP 23 -
+
+# STEP 24 -
+
+# STEP 25 -
+
+
+# STEP * - Compare Dutch -> English & Chinese -> English
 
 
 
