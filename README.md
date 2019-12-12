@@ -288,6 +288,35 @@ $ sed -i.bak '/^<title>.*title>$/d' test.en.xml
 
 # STEP 19 - Converting XML files (dev/test) to text (Chinese -> English)
 
+$ python3 
+>>> file = open("dev.en.txt", "wb") \
+>>> from lxml import etree \
+>>> tree = etree.parse('dev.en.xml') \
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file.write(notags)
+
+$ python 3 
+>>> file = open("dev.zh.txt", "wb") \
+>>> from lxml import etree \
+>>> tree = etree.parse('dev.zh.xml') \
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file.write(notags)
+
+$ python3 
+>>> file = open("test.en.txt", "wb") \
+>>> from lxml import etree \
+>>> tree = etree.parse('test.en.xml') \
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file.write(notags)
+
+$ python3 
+>>> file = open("test.zh.txt", "wb") \
+>>> from lxml import etree \
+>>> tree = etree.parse('test.zh.xml') \
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file.write(notags)
+
+
 
 
 # STEP 20 -
