@@ -111,7 +111,8 @@ $ python3
 
 # STEP 4 - Tokenization (Dutch -> English)
 
-wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl
+wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl \
+wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.en \
 
 $ perl tokenizer.perl -l en -q < train.en.txt > train.en.tok \
 $ perl tokenizer.perl -l en -q < train.nl.txt > train.nl.tok \
@@ -319,9 +320,30 @@ $ python3
 
 
 
-# STEP 20 -
+# STEP 20 - Tokenization (Chinese -> English)
+
+Download a chinese prefix to tokenize to chinese!
+
+wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.zh
+
+$ perl tokenizer.perl -l en -q < train.en > train.en.tok \
+$ perl tokenizer.perl -l zh -q < train.zh > train.zh.tok \
+$ perl tokenizer.perl -l zh -q < test.zh.txt > test.zh.tok \
+$ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
+$ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
+$ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
 # STEP 21 -
+
+
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.nl.tok > bpe-codes.src \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/train.src > train.src \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/dev.src > valid.src \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/test.src > test.src \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.tgt > bpe-codes.tgt \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/test.tgt > test.tgt \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/valid.tgt > valid.tgt \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
 
 # STEP 22 -
 
