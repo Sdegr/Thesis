@@ -242,9 +242,56 @@ perl multi-bleu.perl test.tgt < nl-en3.pred.atok
 
 # STEP 17 - repeat STEP 2-4 & STEP 8-16 for Chinese -> English
 
+Clean training files:
+
+$ sed -i.bak '/^<talkid>.*talkid>$/d' train.en \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' train.en \
+$ sed -i.bak '/^<url>.*url>$/d' train.en \
+$ sed -i.bak '/^<description>.*description>$/d' train.en \
+$ sed -i.bak '/^<title>.*title>$/d' train.en
+ 
+$ sed -i.bak '/^<talkid>.*talkid>$/d' train.zh \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' train.zh \
+$ sed -i.bak '/^<url>.*url>$/d' train.zh \
+$ sed -i.bak '/^<description>.*description>$/d' train.zh \
+$ sed -i.bak '/^<title>.*title>$/d' train.zh
+
+Clean development files:
+
+$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.zh.xml \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.zh.xml \
+$ sed -i.bak '/^<url>.*url>$/d' dev.zh.xml \
+$ sed -i.bak '/^<description>.*description>$/d' dev.zh.xml \
+$ sed -i.bak '/^<title>.*title>$/d' dev.zh.xml
+ 
+$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.en.xml \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.en.xml \
+$ sed -i.bak '/^<url>.*url>$/d' dev.en.xml \
+$ sed -i.bak '/^<description>.*description>$/d' dev.en.xml \
+$ sed -i.bak '/^<title>.*title>$/d' dev.en.xml 
+ 
+ Clean test files:
+ 
+$ sed -i.bak '/^<talkid>.*talkid>$/d' test.zh.xml \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' test.zh.xml \
+$ sed -i.bak '/^<url>.*url>$/d' test.zh.xml \
+$ sed -i.bak '/^<description>.*description>$/d' test.zh.xml \
+$ sed -i.bak '/^<title>.*title>$/d' test.zh.xml 
+ 
+$ sed -i.bak '/^<talkid>.*talkid>$/d' test.en.xml \
+$ sed -i.bak '/^<keywords>.*keywords>$/d' test.en.xml \
+$ sed -i.bak '/^<url>.*url>$/d' tesv.en.xml \
+$ sed -i.bak '/^<description>.*description>$/d' test.en.xml \
+$ sed -i.bak '/^<title>.*title>$/d' test.en.xml
 
 
-# STEP 18 - Compare Dutch -> English & Chinese -> English
+
+# STEP 19 - 
+
+# STEP 20 -
+
+
+# STEP  - Compare Dutch -> English & Chinese -> English
 
 
 
