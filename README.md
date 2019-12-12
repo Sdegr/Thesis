@@ -29,7 +29,7 @@ https://wit3.fbk.eu/mt.php?release=2014-01
 
 The corpora (containing training/dev/test) can be found in my thesis repository.
 
-# STEP 2 - Cleaning data
+# STEP 2 - Cleaning data (Dutch -> English)
 
 The training, development and test data all contained unwanted tags. These are removed using the following lines of code;
 
@@ -77,7 +77,7 @@ $ sed -i.bak '/^<title>.*title>$/d' test.nl.xml
 
 
 
-# STEP 3 - Converting XML files (dev/test) to text
+# STEP 3 - Converting XML files (dev/test) to text (Dutch -> English)
 
 The development and test files were in XML format and had to be converted to text files in order to work with them.
 
@@ -109,7 +109,7 @@ $ python3
 >>> notags = etree.tostring(tree, encoding='utf8', method='text') \
 >>> file.write(notags) 
 
-# STEP 4 - Tokenization
+# STEP 4 - Tokenization (Dutch -> English)
 
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl
 
@@ -148,7 +148,7 @@ In the virtual environment install the following modules.
  pip install configargparse
 
 
-# STEP 8 - Applying BPE
+# STEP 8 - Applying BPE (Dutch -> English)
 
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.nl.tok > bpe-codes.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/train.nl.tok > train.src \
@@ -160,12 +160,12 @@ In the virtual environment install the following modules.
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/train.en.tok > train.tgt
 
 
-# STEP 9 - Preprocess the data
+# STEP 9 - Preprocess the data (Dutch -> English)
 
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_dat
 a preprocessed -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess
 
-# STEP 10 - Creating a Batch File
+# STEP 10 - Creating a Batch File (Dutch -> English)
 
 \#!/bin/bash \
 \#SBATCH --job-name="nl-en" \
@@ -186,11 +186,11 @@ module load Python \
 \# pip install configargparse \
 \# pip install OpenNMT-py \
 
-# STEP 11 - Training
+# STEP 11 - Training (Dutch -> English)
 
 sbatch script.sh
 
-# STEP 12 - Create a Batch File
+# STEP 12 - Create a Batch File (Dutch -> English)
 
 #!/bin/bash\
 \#SBATCH --job-name="translate-nl-en"\
@@ -218,29 +218,29 @@ python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt \
 -src test.src -tgt test.tgt -replace_unk -output nl-en3.pred.atok
 
 
-# STEP 13 - Translate
+# STEP 13 - Translate (Dutch -> English)
 
 sbatch script2.sh
 
-# STEP 13 - Obtaining BLEU-scores for clean texts
+# STEP 13 - Obtaining BLEU-scores for clean texts (Dutch -> English)
 
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/generic/multi-bleu.perl
 
 perl multi-bleu.perl test.tgt < nl-en3.pred.atok
 
-# STEP 14 - Creating synthetic noise
+# STEP 14 - Apply synthetic noise by using the swap_del.py script (Dutch -> English)
 
 
 
-# STEP 15 - Obtaining BLEU-scores for noisy texts
+# STEP 15 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
 
 
 
-# STEP 16 - Compare BLEU scores of STEP 13 and 15
+# STEP 16 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
 
 
 
-# STEP 17 - repeat STEP 2-4 & STEP 8-16 for Chinese -> English
+# STEP 17 - Clean files (Chinese -> English)
 
 Clean training files:
 
