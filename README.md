@@ -345,6 +345,17 @@ $ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
 $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
 $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
+
+Use above code to obtain very bad BLEU scores for Chinese -> English.
+
+Download the Stanford Segmenter. AND use the following code for the chinese files:
+
+./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok
+./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok
+./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
+
+
+
 # STEP 21 - Apply BPE (Chinese -> English)
 
 
@@ -356,10 +367,6 @@ $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/test.tgt > test.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/valid.tgt > valid.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
-
-Use above code to obtain #very bad# BLEU scores for Chinese -> English.
-
-Download the Stanford Segmenter.
 
 
 
@@ -435,7 +442,7 @@ export CUDA_VISIBLE_DEVICES=0
 
 
 python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
--src BPE_zh_en/test.src -tgt BPE_zh_en/test.tgt -replace_unk -output translate_zh/zh-en.pred.atok
+-src bpe_zh/test.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-en.pred.atok
 
 
 # STEP 25 - Translate (Chinese -> English)
@@ -446,6 +453,9 @@ sbatch translate-zh.sh
 # STEP 26 - Obtaining BLEU-scores for clean texts (Chinese -> English)
 
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
+
+BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer)
+
 
 
 # STEP 27 - Apply synthetic noise by using the swap_del.py script (Chinese -> English)
