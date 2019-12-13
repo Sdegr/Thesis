@@ -187,9 +187,21 @@ module load Python \
 \# pip install configargparse \
 \# pip install OpenNMT-py \
 
+export CUDA_VISIBLE_DEVICES=0 \
+
+python  OpenNMT-py/train.py -data pre_NL/preprocessed -save_model train_NL/NL-en_model \
+        -layers 6 -rnn_size 512 -word_vec_size 512 -transformer_ff 2048 -heads 8  \
+        -encoder_type transformer -decoder_type transformer -position_encoding \
+        -train_steps 60000  -max_generator_batches 2 -dropout 0.1 \
+        -batch_size 4096 -batch_type tokens -normalization tokens  -accum_count 2 \
+        -optim adam -adam_beta2 0.998 -decay_method noam -warmup_steps 8000 -learning_rate 2 \
+        -max_grad_norm 0 -param_init 0  -param_init_glorot \
+        -label_smoothing 0.1 -valid_steps 10000 -save_checkpoint_steps 10000 \
+        -log_file logs/NL/log.train -world_size 1 -gpu_ranks 0
+        
 # STEP 11 - Training (Dutch -> English)
 
-sbatch script.sh
+sbatch script-nl.sh
 
 # STEP 12 - Create a Batch File (Dutch -> English)
 
@@ -227,7 +239,7 @@ sbatch script2.sh
 
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/generic/multi-bleu.perl
 
-perl multi-bleu.perl test.tgt < nl-en3.pred.atok
+perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
 # STEP 14 - Apply synthetic noise by using the swap_del.py script (Dutch -> English)
 
@@ -333,7 +345,7 @@ $ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
 $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
 $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
-# STEP 21 -
+# STEP 21 - Apply BPE (Chinese -> English)
 
 
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.nl.tok > bpe-codes.src \
@@ -345,16 +357,105 @@ $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/valid.tgt > valid.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
 
-# STEP 22 -
+Use above code to obtain #very bad# BLEU scores for Chinese -> English.
 
-# STEP 23 -
-
-# STEP 24 -
-
-# STEP 25 -
+Download the Stanford Segmenter.
 
 
-# STEP * - Compare Dutch -> English & Chinese -> English
+
+
+
+
+# STEP 22 - Preprocess (Chinese -> English)
+
+python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_data preprocessed2 -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess2
+
+
+# STEP 23 - Creating a Batch File (Chinese -> English)
+
+\#!/bin/bash \
+\#SBATCH --job-name="zh-en" \
+\#SBATCH --time=09:15:00 \
+\#SBATCH --ntasks=1 \
+\#SBATCH --mem=10GB \
+\#SBATCH --partition=gpu \
+\#SBATCH --gres=gpu:v100:1 \
+\#SBATCH --mail-type=ALL \
+\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+
+source thesis-env/bin/activate \
+module load Python \
+\# pip install --upgrade pip \
+\# pip install torch \
+\# pip install torchvision \
+\# pip install torchtext \
+\# pip install configargparse \
+\# pip install OpenNMT-py 
+
+
+export CUDA_VISIBLE_DEVICES=0
+
+python  OpenNMT-py/train.py -data preprocessed2 -save_model train_zh/zh-en_model \
+        -layers 6 -rnn_size 512 -word_vec_size 512 -transformer_ff 2048 -heads 8  \
+        -encoder_type transformer -decoder_type transformer -position_encoding \
+        -train_steps 60000  -max_generator_batches 2 -dropout 0.1 \
+        -batch_size 4096 -batch_type tokens -normalization tokens  -accum_count 2 \
+        -optim adam -adam_beta2 0.998 -decay_method noam -warmup_steps 8000 -learning_rate 2 \
+        -max_grad_norm 0 -param_init 0  -param_init_glorot \
+        -label_smoothing 0.1 -valid_steps 10000 -save_checkpoint_steps 10000 \
+        -log_file logs/zh/log.train -world_size 1 -gpu_ranks 0
+
+# STEP 24 - Training (Chinese -> English)
+
+sbatch script-zh.sh
+
+# STEP 25 - Create a batch file (Chinese -> English)
+
+\#!/bin/bash \
+\#SBATCH --job-name="zh-en" \
+\#SBATCH --time=09:15:00 \
+\#SBATCH --ntasks=1 \
+\#SBATCH --mem=10GB \
+\#SBATCH --partition=gpu \
+\#SBATCH --gres=gpu:v100:1 \
+\#SBATCH --mail-type=ALL \
+\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+
+source thesis-env/bin/activate \
+module load Python \
+\# pip install --upgrade pip \
+\# pip install torch \
+\# pip install torchvision \
+\# pip install torchtext \
+\# pip install configargparse \
+\# pip install OpenNMT-py 
+
+
+export CUDA_VISIBLE_DEVICES=0
+
+
+python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
+-src BPE_zh_en/test.src -tgt BPE_zh_en/test.tgt -replace_unk -output translate_zh/zh-en.pred.atok
+
+
+# STEP 25 - Translate (Chinese -> English)
+
+sbatch translate-zh.sh
+
+
+# STEP 26 - Obtaining BLEU-scores for clean texts (Chinese -> English)
+
+perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
+
+
+# STEP 27 - Apply synthetic noise by using the swap_del.py script (Chinese -> English)
+
+# STEP 28 - Translate noisy text (Chinese -> English)
+
+# STEP 29 - Obtain BLEU-score for noisy text (Chinese -> English)
+
+
+# STEP * - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
 
 
