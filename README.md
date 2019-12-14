@@ -266,6 +266,8 @@ $ sed -i.bak '/^<url>.*url>$/d' train.en \
 $ sed -i.bak '/^<description>.*description>$/d' train.en \
 $ sed -i.bak '/^<title>.*title>$/d' train.en
  
+Note: see STEP 19! 
+ 
 $ sed -i.bak '/^<talkid>.*talkid>$/d' train.zh \
 $ sed -i.bak '/^<keywords>.*keywords>$/d' train.zh \
 $ sed -i.bak '/^<url>.*url>$/d' train.zh \
@@ -302,7 +304,7 @@ $ sed -i.bak '/^<title>.*title>$/d' test.en.xml
 
 
 
-# STEP 19 - Converting XML files (dev/test) to text (Chinese -> English)
+# STEP 18 - Converting XML files (dev/test) to text (Chinese -> English)
 
 $ python3 
 >>> file = open("dev.en.txt", "wb") \
@@ -335,7 +337,7 @@ $ python3
 
 
 
-# STEP 20 - Tokenization (Chinese -> English)
+# STEP 19 - Tokenization (Chinese -> English)
 
 Download a chinese prefix to tokenize to chinese!
 
@@ -368,7 +370,7 @@ to find these errors manually..
 
 
 
-# STEP 21 - Apply BPE (Chinese -> English)
+# STEP 20 - Apply BPE (Chinese -> English)
 
 
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.nl.tok > bpe-codes.src \
@@ -385,12 +387,12 @@ to find these errors manually..
 
 
 
-# STEP 22 - Preprocess (Chinese -> English)
+# STEP 21 - Preprocess (Chinese -> English)
 
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_data preprocessed2 -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess2
 
 
-# STEP 23 - Creating a Batch File (Chinese -> English)
+# STEP 22 - Creating a Batch File (Chinese -> English)
 
 \#!/bin/bash \
 \#SBATCH --job-name="zh-en" \
@@ -424,11 +426,11 @@ python  OpenNMT-py/train.py -data preprocessed2 -save_model train_zh/zh-en_model
         -label_smoothing 0.1 -valid_steps 10000 -save_checkpoint_steps 10000 \
         -log_file logs/zh/log.train -world_size 1 -gpu_ranks 0
 
-# STEP 24 - Training (Chinese -> English)
+# STEP 23 - Training (Chinese -> English)
 
 sbatch script-zh.sh
 
-# STEP 25 - Create a batch file (Chinese -> English)
+# STEP 24 - Create a batch file (Chinese -> English)
 
 \#!/bin/bash \
 \#SBATCH --job-name="zh-en" \
