@@ -28,7 +28,9 @@ These corpora are downloaded from;
 
 https://wit3.fbk.eu/mt.php?release=2014-01
 
-The corpora (containing training/dev/test) can be found in my thesis repository.
+The corpora (containing training/dev/test) can be found in my thesis repository. \
+Thesis/dutch-english\
+Thesis/chinese-english
 
 # STEP 2 - Cleaning data (Dutch -> English)
 
