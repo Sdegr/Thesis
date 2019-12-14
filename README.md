@@ -354,6 +354,15 @@ Download the Stanford Segmenter. AND use the following code for the chinese file
 ./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok
 ./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
 
+NOTE: There are three errors in the train.tgt -file. \ 
+This can be solved by tokenizing the train.en file with the mozes tokenizer \
+searching for lines; 12636, 30908 and 39265 and removing these exact lines \
+before STEP 17. (I only wrote down these lines when I tokenized so the \
+lines to be deleted have another number, but you should be able to find them with the instructions above. \
+If this is not done, the train.en file will contain three lines more \
+and it is not possible to solve this by a script. It took me 6 hours \
+to find these errors manually..
+
 
 
 # STEP 21 - Apply BPE (Chinese -> English)
@@ -455,6 +464,7 @@ sbatch translate-zh.sh
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
 
 BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer)
+BLEU =                            (Stanford Tokenizer)
 
 
 
@@ -464,8 +474,7 @@ BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer)
 
 # STEP 29 - Obtain BLEU-score for noisy text (Chinese -> English)
 
-
-# STEP * - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
+# STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
 
 
