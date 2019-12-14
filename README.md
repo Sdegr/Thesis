@@ -364,7 +364,7 @@ This can be solved by tokenizing the train.en file with the mozes tokenizer. \
 After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
 before STEP 17. (I only wrote down the number of the lines after I tokenized so the \
 lines to be deleted have another number, but you should be able to find them with the instructions above. \
-If this is not correctly, the train.tgt file will contain three lines more than the train.src file \
+If this is not done correctly, the train.tgt file will contain three lines more than the train.src file \
 and it is not possible to solve this by using any script/program. It took me 6 hours \
 to find these errors manually..
 
