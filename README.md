@@ -1,5 +1,5 @@
 # Bachelor Thesis Sil de Graaf.
-Training two transformer models NL-EN/ZH-EN in combination with the use of BPE to look which of these two source languages
+Training two transformer models NL-EN/ZH-EN in combination with the use of BPE to look which of the two source languages
 (Dutch vs Chinese) is more brittle to synthetic noise.
 
 
