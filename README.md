@@ -346,21 +346,21 @@ $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
 $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
 
-Use above code to obtain very bad BLEU scores for Chinese -> English.
+Use above code to obtain (very bad) BLEU scores for Chinese -> English.
 
 Download the Stanford Segmenter. AND use the following code for the chinese files:
 
-./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok
-./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok
+./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok \
+./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok \
 ./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
 
-NOTE: There are three errors in the train.tgt -file. \ 
-This can be solved by tokenizing the train.en file with the mozes tokenizer \
-searching for lines; 12636, 30908 and 39265 and removing these exact lines \
-before STEP 17. (I only wrote down these lines when I tokenized so the \
+NOTE: There are three errors in the train.tgt -file.  
+This can be solved by tokenizing the train.en file with the mozes tokenizer. \
+After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
+before STEP 17. (I only wrote down the number of the lines after I tokenized so the \
 lines to be deleted have another number, but you should be able to find them with the instructions above. \
-If this is not done, the train.en file will contain three lines more \
-and it is not possible to solve this by a script. It took me 6 hours \
+If this is not correctly, the train.tgt file will contain three lines more than the train.src file \
+and it is not possible to solve this by using any script/program. It took me 6 hours \
 to find these errors manually..
 
 
