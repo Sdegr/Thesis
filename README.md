@@ -8,6 +8,7 @@ Training two transformer models NL-EN/ZH-EN in combination with the use of BPE t
 - A GPU
 - Python
 - Moses Tokenizer
+- Stanford Segmenter
 - OpenNMT-py
 - A Python virtual environment containing: \
  (pip install) --upgrade pip \
@@ -15,7 +16,7 @@ Training two transformer models NL-EN/ZH-EN in combination with the use of BPE t
  (pip install) torchvision \
  (pip install) torchtext \
  (pip install) configargparse
-- A script to create synthetic noise
+- A script to create synthetic noise (swap_del.py)
 - Perl's multi-bleu
 
 
@@ -463,7 +464,7 @@ sbatch translate-zh.sh
 
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
 
-BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer)
+BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer) \
 BLEU =                            (Stanford Tokenizer)
 
 
