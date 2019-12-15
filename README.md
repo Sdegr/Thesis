@@ -246,7 +246,7 @@ perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
 # STEP 14 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
 
-python3 swap_del.py test.zh.txt swap.zh.txt
+python3 swap_del.py test.nl.txt swap.nl.txt
 
 swap_del.py is found under Thesis/swap_del.py
 
