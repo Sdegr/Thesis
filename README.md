@@ -8,7 +8,7 @@ Training two transformer models NL-EN/ZH-EN in combination with the use of BPE t
 - A GPU
 - Python
 - Moses Tokenizer
-- Stanford Segmenter
+- ~~Stanford Segmenter~~
 - OpenNMT-py
 - A Python virtual environment containing: \
  (pip install) --upgrade pip \
