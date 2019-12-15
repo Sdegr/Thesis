@@ -244,8 +244,11 @@ wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/gen
 
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
-# STEP 14 - Apply synthetic noise by using the swap_del.py script (Dutch -> English)
+# STEP 14 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
 
+python3 swap_del.py test.zh.txt swap.zh.txt
+
+swap_del.py is found under Thesis/swap_del.py
 
 
 # STEP 15 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
@@ -351,15 +354,14 @@ $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
 $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
 
-Use above code to obtain (very bad) BLEU scores for Chinese -> English.
-
-Download the Stanford Segmenter. AND use the following code for the chinese files:
+Either download the Stanford Segmenter. AND use the following code to tokenize the Chinese files:
 
 ./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok \
 ./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok \
 ./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
 
-NOTE: There are three errors in the train.tgt -file.  
+NOTE: There are three errors in the train.tgt -file. If a combination of the \
+Stanford Segmenter (for Chinese) and Moses Tokenizer (for English) is used. \
 This can be solved by tokenizing the train.en file with the mozes tokenizer. \
 After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
 before STEP 17. (I only wrote down the number of the lines after I tokenized so the \
@@ -367,6 +369,8 @@ lines to be deleted have another number, but you should be able to find them wit
 If this is not done correctly, the train.tgt file will contain three lines more than the train.src file \
 and it is not possible to solve this by using any script/program. It took me 6 hours \
 to find these errors manually..
+
+NOTE: I would go with the Moses tokenizer eitherway.
 
 
 
@@ -469,15 +473,48 @@ sbatch translate-zh.sh
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
 
 BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer) \
-BLEU =                            (Stanford Tokenizer)
 
 
+# STEP 27 - Apply synthetic noise to test file by using the swap_del.py script (Chinese -> English)
 
-# STEP 27 - Apply synthetic noise by using the swap_del.py script (Chinese -> English)
+python3 swap_del.py test.zh.txt swap.zh.txt
+
+swap_del.py is found under Thesis/swap_del.py
+
+# STEP 28 - Create a Batch File for noisy data (Chinese -> English)
+
+\#!/bin/bash \
+\#SBATCH --job-name="zh-en" \
+\#SBATCH --time=09:15:00 \
+\#SBATCH --ntasks=1 \
+\#SBATCH --mem=10GB \
+\#SBATCH --partition=gpu \
+\#SBATCH --gres=gpu:v100:1 \
+\#SBATCH --mail-type=ALL \
+\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+
+source thesis-env/bin/activate \
+module load Python \
+\# pip install --upgrade pip \
+\# pip install torch \
+\# pip install torchvision \
+\# pip install torchtext \
+\# pip install configargparse \
+\# pip install OpenNMT-py 
+
+
+export CUDA_VISIBLE_DEVICES=0
+
+
+python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
+-src bpe_zh/test.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-noise-en.pred.atok
 
 # STEP 28 - Translate noisy text (Chinese -> English)
 
+sbatch translate-noise-zh.sh
+
 # STEP 29 - Obtain BLEU-score for noisy text (Chinese -> English)
+
 
 # STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
