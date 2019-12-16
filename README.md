@@ -357,13 +357,13 @@ $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
 $ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
 
 
-Either download the Stanford Segmenter. AND use the following code to tokenize the Chinese files:
+Or download the Stanford Segmenter. Use the following code to tokenize the Chinese files with the Stanford Segmenter:
 
 ./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok \
 ./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok \
 ./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
 
-NOTE: There are three errors in the train.tgt -file. If a combination of the \
+NOTE: There are three errors in the train.en file. If a combination of the \
 Stanford Segmenter (for Chinese) and Moses Tokenizer (for English) is used. \
 This can be solved by tokenizing the train.en file with the mozes tokenizer. \
 After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
