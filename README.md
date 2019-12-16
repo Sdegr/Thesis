@@ -244,6 +244,8 @@ wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/gen
 
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
+BLEU = 31.22, 61.7/38.7/26.1/18.0
+
 # STEP 14 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
 
 python3 swap_del.py test.nl.txt swap.nl.txt
@@ -253,6 +255,7 @@ swap_del.py is found under Thesis/swap_del.py
 
 # STEP 15 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
 
+BLEU = 21.79 (without BPE on test file, but after tokenizaten)
 
 
 # STEP 16 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
@@ -515,6 +518,9 @@ sbatch translate-noise-zh.sh
 
 # STEP 29 - Obtain BLEU-score for noisy text (Chinese -> English)
 
+perl multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en.pred.atok
+
+BLEU = 2.83 (without BPE on test file, but after tokenizaten)
 
 # STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
