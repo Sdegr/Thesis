@@ -289,6 +289,7 @@ python3 swap_del.py test.nl.txt swap.nl.txt
 ```
 
 NOTE: First apply noise, then tokenize and then apply BPE again.
+Test with and without BPE.
 
 swap_del.py is found under Thesis/swap_del.py
 
@@ -372,6 +373,7 @@ Repeat step 13 with your name Batch File.
 ```
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en-noise.pred.atok
 ```
+
 BLEU = 26.09 (with BPE on the test file)
 
 BLEU = 21.79 (without BPE on the test file)
@@ -609,7 +611,8 @@ BLEU = 14.88
 python3 swap_del.py test.zh.txt swap.zh.txt
 ```
 
-NOTE: First apply noise, then tokenize and then apply BPE again.
+NOTE: First apply noise, then tokenize and then apply BPE again. \
+Test with and without BPE.
 
 swap_del.py is found under Thesis/swap_del.py
 
@@ -618,7 +621,7 @@ swap_del.py is found under Thesis/swap_del.py
 ```
 #!/bin/bash 
 #SBATCH --job-name="zh-en-noise" 
-#SBATCH --time=09:15:00 
+#SBATCH --time=00:15:00 
 #SBATCH --ntasks=1 
 #SBATCH --mem=10GB 
 #SBATCH --partition=gpu 
@@ -671,9 +674,9 @@ Dutch:
 
 BLEU = 31.22 (on clean test file)
 
-BLEU = 26.09 (with BPE on the test file)
+BLEU = 26.09 (on noise, with BPE on the test file)
 
-BLEU = 21.79 (without BPE on the test file)
+BLEU = 21.79 (on noise, without BPE on the test file)
 
 
 Chinese:
