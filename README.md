@@ -7,7 +7,7 @@ Training two Transformer models in combination with the use of BPE with NL-EN an
 - A GPU
 - Python
 - Moses Tokenizer
-- ~~Stanford Segmenter~~
+- Stanford Segmenter
 - OpenNMT-py
 - A Python virtual environment containing: \
  (pip install) --upgrade pip \
@@ -243,7 +243,9 @@ wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/gen
 
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
-BLEU = 31.22, 61.7/38.7/26.1/18.0
+BLEU = 31.22, 61.7/38.7/26.1/18.0 (with BPE)
+
+BLEU = 29.45, 65.5/39.5/26.0/17.4 (without BPE)
 
 # STEP 14 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
 
@@ -255,6 +257,10 @@ swap_del.py is found under Thesis/swap_del.py
 # STEP 15 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
 
 BLEU = 21.79 (without BPE on test file, but after tokenizaten)
+
+
+
+BLEU = 3.27, 20.0/3.9/2.0/1.1 (without BPE)
 
 
 # STEP 16 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
@@ -344,19 +350,21 @@ $ python3
 
 # STEP 19 - Tokenization (Chinese -> English)
 
-Download a chinese prefix to tokenize to chinese!
+~~Download a chinese prefix to tokenize to chinese!
 
-wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.zh
+~~wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.zh
 
 $ perl tokenizer.perl -l en -q < train.en > train.en.tok \
-$ perl tokenizer.perl -l zh -q < train.zh > train.zh.tok \
-$ perl tokenizer.perl -l zh -q < test.zh.txt > test.zh.tok \
+~~$ perl tokenizer.perl -l zh -q < train.zh > train.zh.tok \
+~~$  ~~perl tokenizer.perl -l zh -q < test.zh.txt > test.zh.tok~~ \
 $ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
 $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
-$ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
+~~$ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
+
+Note: not recommended, use the Moses tokenizer for Chinese!
 
 
-Or download the Stanford Segmenter. Use the following code to tokenize the Chinese files with the Stanford Segmenter:
+Use the following code to tokenize the Chinese files with the Stanford Segmenter:
 
 ./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok \
 ./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok \
@@ -371,8 +379,6 @@ lines to be deleted have another number, but you should be able to find them wit
 If this is not done correctly, the train.tgt file will contain three lines more than the train.src file \
 and it is not possible to solve this by using any script/program. It took me 6 hours \
 to find these errors manually..
-
-NOTE: I would go with the Moses tokenizer eitherway.
 
 
 
@@ -486,7 +492,7 @@ swap_del.py is found under Thesis/swap_del.py
 # STEP 28 - Create a Batch File for noisy data (Chinese -> English)
 
 \#!/bin/bash \
-\#SBATCH --job-name="zh-en" \
+\#SBATCH --job-name="zh-en-noise" \
 \#SBATCH --time=09:15:00 \
 \#SBATCH --ntasks=1 \
 \#SBATCH --mem=10GB \
@@ -519,7 +525,12 @@ sbatch translate-noise-zh.sh
 
 perl multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en.pred.atok
 
-BLEU = 2.83 (without BPE on test file, but after tokenizaten)
+BLEU = 2.83 (without BPE on test file, after tokenizaten)
+
+multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en5.pred.atok
+
+BLEU = 22.58 (with BPE on test file, after tokenizaten)
+
 
 # STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
