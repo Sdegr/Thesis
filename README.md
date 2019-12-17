@@ -6,8 +6,8 @@ Training two Transformer models in combination with the use of BPE with NL-EN an
 - Bilingual corpora
 - A GPU
 - Python
-- Moses Tokenizer
-- Stanford Segmenter
+- The Moses Tokenizer
+- The Stanford Segmenter
 - OpenNMT-py
 - A Python virtual environment containing: \
  (pip install) --upgrade pip \
@@ -31,86 +31,98 @@ The corpora (containing training/dev/test) can be found in my thesis repository.
 Thesis/dutch-english\
 Thesis/chinese-english
 
+NOTE 
+
 # STEP 2 - Cleaning data (Dutch -> English)
 
 The training, development and test data all contained unwanted tags. These are removed using the following lines of code;
 
 Clean training files:
 
-$ sed -i.bak '/^<url>.*url>$/d' train.tags.nl-en.en \
-$ sed -i.bak '/^<description>.*description>$/d' train.tags.nl-en.en \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' train.tags.nl-en.en \
-$ sed -i.bak '/^<title>.*title>$/d' train.tags.nl-en.en \
+```
+$ sed -i.bak '/^<url>.*url>$/d' train.tags.nl-en.en 
+$ sed -i.bak '/^<description>.*description>$/d' train.tags.nl-en.en 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' train.tags.nl-en.en 
+$ sed -i.bak '/^<title>.*title>$/d' train.tags.nl-en.en 
 $ sed -i.bak '/^<talkid>.*talkid>$/d' train.tags.nl-en.en 
-
-$ sed -i.bak '/^<url>.*url>$/d' train.tags.nl-en.nl \
-$ sed -i.bak '/^<description>.*description>$/d' train.tags.nl-en.nl \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' train.tags.nl-en.nl \
-$ sed -i.bak '/^<title>.*title>$/d' train.tags.nl-en.nl \
+```
+```
+$ sed -i.bak '/^<url>.*url>$/d' train.tags.nl-en.nl 
+$ sed -i.bak '/^<description>.*description>$/d' train.tags.nl-en.nl 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' train.tags.nl-en.nl 
+$ sed -i.bak '/^<title>.*title>$/d' train.tags.nl-en.nl 
 $ sed -i.bak '/^<talkid>.*talkid>$/d' train.tags.nl-en.nl 
-
+```
 Clean development files:
 
-$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.en.xml \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.en.xml \
-$ sed -i.bak '/^<url>.*url>$/d' dev.en.xml \
-$ sed -i.bak '/^<description>.*description>$/d' dev.en.xml \
+```
+$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.en.xml 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.en.xml 
+$ sed -i.bak '/^<url>.*url>$/d' dev.en.xml
+$ sed -i.bak '/^<description>.*description>$/d' dev.en.xml 
 $ sed -i.bak '/^<title>.*title>$/d' dev.en.xml 
-
-$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.nl.xml \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.nl.xml \
-$ sed -i.bak '/^<url>.*url>$/d' dev.nl.xml \
-$ sed -i.bak '/^<description>.*description>$/d' dev.nl.xml \
+```
+```
+$ sed -i.bak '/^<talkid>.*talkid>$/d' dev.nl.xml 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' dev.nl.xml 
+$ sed -i.bak '/^<url>.*url>$/d' dev.nl.xml 
+$ sed -i.bak '/^<description>.*description>$/d' dev.nl.xml 
 $ sed -i.bak '/^<title>.*title>$/d' dev.nl.xml 
-
+```
 Clean test files:
 
-$ sed -i.bak '/^<talkid>.*talkid>$/d' test.en.xml \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' test.en.xml \
-$ sed -i.bak '/^<url>.*url>$/d' test.en.xml \
-$ sed -i.bak '/^<description>.*description>$/d' test.en.xml \
+```
+$ sed -i.bak '/^<talkid>.*talkid>$/d' test.en.xml 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' test.en.xml 
+$ sed -i.bak '/^<url>.*url>$/d' test.en.xml 
+$ sed -i.bak '/^<description>.*description>$/d' test.en.xml 
 $ sed -i.bak '/^<title>.*title>$/d' test.en.xml 
-
-$ sed -i.bak '/^<talkid>.*talkid>$/d' test.nl.xml \
-$ sed -i.bak '/^<keywords>.*keywords>$/d' test.nl.xml \
-$ sed -i.bak '/^<url>.*url>$/d' test.nl.xml \
-$ sed -i.bak '/^<description>.*description>$/d' test.nl.xml \
+```
+```
+$ sed -i.bak '/^<talkid>.*talkid>$/d' test.nl.xml 
+$ sed -i.bak '/^<keywords>.*keywords>$/d' test.nl.xml 
+$ sed -i.bak '/^<url>.*url>$/d' test.nl.xml 
+$ sed -i.bak '/^<description>.*description>$/d' test.nl.xml 
 $ sed -i.bak '/^<title>.*title>$/d' test.nl.xml 
-
+```
 
 
 # STEP 3 - Converting XML files (dev/test) to text (Dutch -> English)
 
 The development and test files were in XML format and had to be converted to text files in order to work with them.
-
+```
 $ python3
->>> file = open("test.nl.txt", "wb") \
->>> from lxml import etree \
->>> tree = etree.parse('test.nl.xml') \
->>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file = open("test.nl.txt", "wb") 
+>>> from lxml import etree 
+>>> tree = etree.parse('test.nl.xml') 
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') 
 >>> file.write(notags)
-
+```
+```
 $ python3
->>> file = open("test.en.txt", "wb") \
->>> from lxml import etree \
->>> tree = etree.parse('test.en.xml') \
->>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file = open("test.en.txt", "wb") 
+>>> from lxml import etree 
+>>> tree = etree.parse('test.en.xml') 
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') 
 >>> file.write(notags) 
-
+```
+```
 $ python3
->>> file = open("dev.nl.txt", "wb") \
->>> from lxml import etree \
->>> tree = etree.parse('dev.nl.xml') \
->>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file = open("dev.nl.txt", "wb") 
+>>> from lxml import etree 
+>>> tree = etree.parse('dev.nl.xml') 
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') 
 >>> file.write(notags) 
+```
 
+```
 $ python3
->>> file = open("dev.en.txt", "wb") \
->>> from lxml import etree \
->>> tree = etree.parse('dev.en.xml') \
->>> notags = etree.tostring(tree, encoding='utf8', method='text') \
+>>> file = open("dev.en.txt", "wb") 
+>>> from lxml import etree 
+>>> tree = etree.parse('dev.en.xml') 
+>>> notags = etree.tostring(tree, encoding='utf8', method='text') 
 >>> file.write(notags) 
-
+```
 # STEP 4 - Tokenization (Dutch -> English)
 
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl \
@@ -125,7 +137,7 @@ $ perl tokenizer.perl -l en -q < dev.nl.txt > dev.nl.tok
 
 # STEP 5 - Get access to a GPU
 
-The High Performance Computing (HPC) cluster from the RUG is used for this thesis (Peregrine). Containing 36 Tesla v100 gpu's.
+The High-Performance Computing (HPC) cluster from the University of Groningen is used for this thesis (Peregrine). Which contains 36 nVidia Tesla V100 GPU's.
 
 # STEP 6 - Cloning OpenNMT
 
