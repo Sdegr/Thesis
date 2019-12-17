@@ -33,17 +33,19 @@ Thesis/chinese-english
 
 NOTE: it is highly recommended to create clear folders so that newly obtained files are stored correctly after every \
 step. So that, if a mistakes are made, they can easily be corrected. At the beginning of this research this has \
-not been done correctly, this is why some files/models have weird names or are not stored within a folder (/), \
-Within the code of this Github repository. At some point in this research this has been done correctly since \
-a total of more than 7 models have been trained, without it it became very unclear. \
-Chinese -> English (**with BPE (Stanford)**, without BPE (Stanford Segmenter), with BPE (Mozes Tokenizer), \
-, without BPE (Mozes tokenizer). \
-Dutch -> English (**with BPE (Mozes)**, without BPE) \
-+ some wrongly trained models. \ 
+not been done correctly, this is why some files/models have weird names within the code of this GitHub repository \
+or are not stored within a folder (/), at some point in this research this has been done correctly since, as can \
+be seen in the code. In total more than 7 models have been trained, without clear folders, everything became very unclear. \
 
-Only the bold models above are visualized in this GitHub.
+Trained models:\
+Chinese -> English (**with BPE (Stanford Segmenter)**, without BPE (Stanford Segmenter), with BPE (Mozes Tokenizer), \
+, without BPE (Mozes Tokenizer). 
 
+Dutch -> English (**with BPE (Mozes Tokenizer)**, without BPE (Mozes Tokenizer) 
 
++ some wrongly trained models. 
+
+Only the bold models above are visualized in this GitHub repository.
 
 
 # STEP 2 - Cleaning data (Dutch -> English)
