@@ -1,5 +1,5 @@
 # Bachelor Thesis Sil de Graaf.
-Description: In this research, two Transformer models in combination with the use of BPE with NL-EN and ZH-EN are trained and testen. It is investigated wheter Dutch or Chinese is more brittle to synthetic noise as source language.
+Description: In this research, two Transformer models in combination with the use of BPE with NL-EN and ZH-EN are trained and tested. It is investigated wheter Dutch *or* Chinese is more brittle to synthetic noise as source language.
 
 
 # Requirements
@@ -31,7 +31,11 @@ The corpora (containing training/dev/test) can be found in my thesis repository.
 Thesis/dutch-english\
 Thesis/chinese-english
 
-NOTE 
+NOTE: it is highly recommended to create clear folders so that newly obtained files are stored correctly after every step. \
+So that, if a mistakes are made, they can easily be corrected. \
+At the beginning of this research this has not been done correctly, this is why some files/models have weird names \
+or are not stored within a folder (/).
+
 
 # STEP 2 - Cleaning data (Dutch -> English)
 
@@ -266,58 +270,72 @@ python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt \
 
 # STEP 13 - Translate (Dutch -> English)
 
+```
 sbatch script2.sh
+```
 
-# STEP 13 - Obtaining BLEU-scores for clean texts (Dutch -> English)
+# STEP 14 - Obtaining BLEU-scores for clean texts (Dutch -> English)
 
+```
 wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/generic/multi-bleu.perl
 
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
-BLEU = 31.22, 61.7/38.7/26.1/18.0 (with BPE)
+```
 
-BLEU = 29.45, 65.5/39.5/26.0/17.4 (without BPE)
+BLEU = 31.22
 
-# STEP 14 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
 
+
+# STEP 15 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
+```
 python3 swap_del.py test.nl.txt swap.nl.txt
+```
 
-swap_del.py is found under Thesis/swap_del.py
+NOTE: swap_del.py is found under Thesis/swap_del.py
+
+# STEP 16
+
+Make another batch file as in STEP 12 but change; '-src <oldfilename>' to, '-src <newfilename>'. \
+and change; '-output <oldfilename>' to, '-output <newfilename>'. Rename your Batch File.
+
+Repeat step 13 with your name Batch File.
+
+ 
+
+# STEP 17 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
+
+```
+perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en-noise.pred.atok
+```
+BLEU = 26.09
 
 
-# STEP 15 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
+# STEP 18 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
 
-BLEU = 21.79 (without BPE on test file, but after tokenizaten)
+# STEP 19 - Clean files (Chinese -> English)
 
-
-
-BLEU = 3.27, 20.0/3.9/2.0/1.1 (without BPE)
-
-
-# STEP 16 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
-
-
-
-# STEP 17 - Clean files (Chinese -> English)
 
 Clean training files:
 
+```
 $ sed -i.bak '/^<talkid>.*talkid>$/d' train.en \
 $ sed -i.bak '/^<keywords>.*keywords>$/d' train.en \
 $ sed -i.bak '/^<url>.*url>$/d' train.en \
 $ sed -i.bak '/^<description>.*description>$/d' train.en \
 $ sed -i.bak '/^<title>.*title>$/d' train.en
- 
-Note: see STEP 19! 
- 
+```
+Note: see STEP 21! 
+
+``` 
 $ sed -i.bak '/^<talkid>.*talkid>$/d' train.zh \
 $ sed -i.bak '/^<keywords>.*keywords>$/d' train.zh \
 $ sed -i.bak '/^<url>.*url>$/d' train.zh \
 $ sed -i.bak '/^<description>.*description>$/d' train.zh \
 $ sed -i.bak '/^<title>.*title>$/d' train.zh
-
+```
 Clean development files:
-
+```
 $ sed -i.bak '/^<talkid>.*talkid>$/d' dev.zh.xml \
 $ sed -i.bak '/^<keywords>.*keywords>$/d' dev.zh.xml \
 $ sed -i.bak '/^<url>.*url>$/d' dev.zh.xml \
@@ -329,9 +347,10 @@ $ sed -i.bak '/^<keywords>.*keywords>$/d' dev.en.xml \
 $ sed -i.bak '/^<url>.*url>$/d' dev.en.xml \
 $ sed -i.bak '/^<description>.*description>$/d' dev.en.xml \
 $ sed -i.bak '/^<title>.*title>$/d' dev.en.xml 
- 
+ ```
  Clean test files:
  
+ ```
 $ sed -i.bak '/^<talkid>.*talkid>$/d' test.zh.xml \
 $ sed -i.bak '/^<keywords>.*keywords>$/d' test.zh.xml \
 $ sed -i.bak '/^<url>.*url>$/d' test.zh.xml \
@@ -343,10 +362,11 @@ $ sed -i.bak '/^<keywords>.*keywords>$/d' test.en.xml \
 $ sed -i.bak '/^<url>.*url>$/d' tesv.en.xml \
 $ sed -i.bak '/^<description>.*description>$/d' test.en.xml \
 $ sed -i.bak '/^<title>.*title>$/d' test.en.xml
+```
 
 
-
-# STEP 18 - Converting XML files (dev/test) to text (Chinese -> English)
+# STEP 20 - Converting XML files (dev/test) to text (Chinese -> English)
+```
 
 $ python3 
 >>> file = open("dev.en.txt", "wb") \
@@ -375,31 +395,28 @@ $ python3
 >>> tree = etree.parse('test.zh.xml') \
 >>> notags = etree.tostring(tree, encoding='utf8', method='text') \
 >>> file.write(notags)
+```
 
 
 
+# STEP 21 - Tokenization (Chinese -> English)
 
-# STEP 19 - Tokenization (Chinese -> English)
+```
+$ perl tokenizer.perl -l en -q < train.en > train.en.tok 
+$ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok 
+$ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok 
 
-~~Download a chinese prefix to tokenize to chinese!
-
-~~wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.zh
-
-$ perl tokenizer.perl -l en -q < train.en > train.en.tok \
-~~$ perl tokenizer.perl -l zh -q < train.zh > train.zh.tok \
-~~$  ~~perl tokenizer.perl -l zh -q < test.zh.txt > test.zh.tok~~ \
-$ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
-$ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
-~~$ perl tokenizer.perl -l zh -q < dev.zh.txt > dev.zh.tok 
-
-Note: not recommended, use the Moses tokenizer for Chinese!
+```
+Note: not recommended, to use the Moses tokenizer for Chinese!
 
 
-Use the following code to tokenize the Chinese files with the Stanford Segmenter:
+Use the following code to tokenize the Chinese files with the Stanford Segmenter.
 
-./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok \
-./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok \
+```
+./segment.sh pku cleandata/test.zh.txt UTF-8 0 > test.zh.tok 
+./segment.sh pku cleandata/dev.zh.txt UTF-8 0 > dev.zh.tok 
 ./segment.sh pku cleandata/train.zh.txt UTF-8 0 > train.zh.tok
+```
 
 NOTE: There are three errors in the train.en file. If a combination of the \
 Stanford Segmenter (for Chinese) and Moses Tokenizer (for English) is used. \
@@ -413,9 +430,9 @@ to find these errors manually..
 
 
 
-# STEP 20 - Apply BPE (Chinese -> English)
+# STEP 22 - Apply BPE (Chinese -> English)
 
-
+```
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.nl.tok > bpe-codes.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/train.src > train.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/dev.src > valid.src \
@@ -424,7 +441,7 @@ to find these errors manually..
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/test.tgt > test.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/valid.tgt > valid.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
-
+```
 
 
 
@@ -432,29 +449,31 @@ to find these errors manually..
 
 # STEP 21 - Preprocess (Chinese -> English)
 
+```
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_data preprocessed2 -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess2
-
+```
 
 # STEP 22 - Creating a Batch File (Chinese -> English)
 
-\#!/bin/bash \
-\#SBATCH --job-name="zh-en" \
-\#SBATCH --time=09:15:00 \
-\#SBATCH --ntasks=1 \
-\#SBATCH --mem=10GB \
-\#SBATCH --partition=gpu \
-\#SBATCH --gres=gpu:v100:1 \
-\#SBATCH --mail-type=ALL \
-\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+```
+#!/bin/bash 
+#SBATCH --job-name="zh-en" 
+#SBATCH --time=09:15:00 
+#SBATCH --ntasks=1 
+#SBATCH --mem=10GB 
+#SBATCH --partition=gpu 
+#SBATCH --gres=gpu:v100:1 
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
 
-source thesis-env/bin/activate \
-module load Python \
-\# pip install --upgrade pip \
-\# pip install torch \
-\# pip install torchvision \
-\# pip install torchtext \
-\# pip install configargparse \
-\# pip install OpenNMT-py 
+source thesis-env/bin/activate 
+module load Python 
+# pip install --upgrade pip 
+# pip install torch 
+# pip install torchvision 
+# pip install torchtext 
+# pip install configargparse 
+# pip install OpenNMT-py 
 
 
 export CUDA_VISIBLE_DEVICES=0
@@ -468,6 +487,8 @@ python  OpenNMT-py/train.py -data preprocessed2 -save_model train_zh/zh-en_model
         -max_grad_norm 0 -param_init 0  -param_init_glorot \
         -label_smoothing 0.1 -valid_steps 10000 -save_checkpoint_steps 10000 \
         -log_file logs/zh/log.train -world_size 1 -gpu_ranks 0
+        
+```
 
 # STEP 23 - Training (Chinese -> English)
 
