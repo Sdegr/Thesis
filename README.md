@@ -292,7 +292,7 @@ NOTE: First apply noise, then tokenize and then apply BPE again.
 
 swap_del.py is found under Thesis/swap_del.py
 
-# CODE for swap_del.py
+# swap_del.py
 
 ```
 
