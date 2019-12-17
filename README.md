@@ -31,22 +31,6 @@ The corpora (containing training/dev/test) can be found in my thesis repository.
 Thesis/dutch-english\
 Thesis/chinese-english
 
-NOTE: it is highly recommended to create clear folders so that newly obtained files are stored correctly after every \
-step. So that, if a mistakes are made, they can easily be corrected. At the beginning of this research this has \
-not been done correctly, this is why some files/models have weird names within the code of this GitHub repository \
-or are not stored within a folder (/), at some point in this research this has been done correctly since, as can \
-be seen in the code. In total more than 7 models have been trained, without clear folders, everything became very unclear. \
-
-Trained models:\
-Chinese -> English (**with BPE (Stanford Segmenter)**, without BPE (Stanford Segmenter), with BPE (Mozes Tokenizer), \
-, without BPE (Mozes Tokenizer). 
-
-Dutch -> English (**with BPE (Mozes Tokenizer)**, without BPE (Mozes Tokenizer) 
-
-+ some wrongly trained models. 
-
-Only the bold models above are visualized in this GitHub repository.
-
 
 # STEP 2 - Cleaning data (Dutch -> English)
 
@@ -294,16 +278,19 @@ perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en.pred.atok
 
 ```
 
-BLEU = 31.22
+BLEU = 31.22 
 
 
 
 # STEP 15 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
+
 ```
 python3 swap_del.py test.nl.txt swap.nl.txt
 ```
 
-NOTE: swap_del.py is found under Thesis/swap_del.py
+NOTE: First apply noise, then tokenize and then apply BPE again.
+
+swap_del.py is found under Thesis/swap_del.py
 
 # STEP 16
 
@@ -311,7 +298,6 @@ Make another batch file as in STEP 12 but change; '-src <oldfilename>' to, '-src
 and change; '-output <oldfilename>' to, '-output <newfilename>'. Rename your Batch File.
 
 Repeat step 13 with your name Batch File.
-
  
 
 # STEP 17 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
@@ -319,8 +305,9 @@ Repeat step 13 with your name Batch File.
 ```
 perl multi-bleu.perl BPE_nl-en/test.tgt < nl-en-noise.pred.atok
 ```
-BLEU = 26.09
+BLEU = 26.09 (with BPE on the test file)
 
+BLEU = 21.79 (without BPE on the test file)
 
 # STEP 18 - Compare BLEU scores of STEP 13 and 15 (Dutch -> English)
 
@@ -454,10 +441,6 @@ to find these errors manually..
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
 ```
 
-
-
-
-
 # STEP 23 - Preprocess (Chinese -> English)
 
 ```
@@ -550,7 +533,7 @@ sbatch translate-zh.sh
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
 ```
 
-BLEU =14.88
+BLEU = 14.88
 
 
 # STEP 29 - Apply synthetic noise to test file by using the swap_del.py script (Chinese -> English)
@@ -558,6 +541,8 @@ BLEU =14.88
 ```
 python3 swap_del.py test.zh.txt swap.zh.txt
 ```
+
+NOTE: First apply noise, then tokenize and then apply BPE again.
 
 swap_del.py is found under Thesis/swap_del.py
 
@@ -608,10 +593,32 @@ BLEU = 2.83 (without BPE on test file, after tokenizaten)
 multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en5.pred.atok
 ```
 
-BLEU =11.90 (with BPE on test file, after tokenization).
+BLEU = 11.90 (with BPE on test file, after tokenization).
 
 # STEP 33 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
+
+Dutch:
+
+BLEU = 31.22 (on clean test file)
+
+BLEU = 26.09 (with BPE on the test file)
+
+BLEU = 21.79 (without BPE on the test file)
+
+
+Chinese:
+
+BLEU = 14.88 (on clean test file)
+
+BLEU = 2.83 (on noise, without BPE on test file)
+
+BLEU = 11.90 (on noise, with BPE on test file).
+
+
+# Remark:
+
+It is highly recommended to store files with correct file names and in seperate folders after each step.
 
 
 
