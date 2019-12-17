@@ -376,8 +376,8 @@ This can be solved by tokenizing the train.en file with the mozes tokenizer. \
 After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
 before STEP 17. (I only wrote down the number of the lines after I tokenized so the \
 lines to be deleted have another number, but you should be able to find them with the instructions above. \
-If this is not done correctly, the train.tgt file will contain three lines more than the train.src file \
-and it is not possible to solve this by using any script/program. It took me 6 hours \
+If this is not done correctly, the train.tgt file will contain three lines more than the train.src file. \
+To my best interest, it is not possible to solve this by using any script/program. It took me 6 hours \
 to find these errors manually..
 
 
@@ -480,7 +480,7 @@ sbatch translate-zh.sh
 
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
 
-BLEU = 25.22, 55.4/34.2/24.8/18.1 (Moses tokenizer) \
+BLEU =14.88
 
 
 # STEP 27 - Apply synthetic noise to test file by using the swap_del.py script (Chinese -> English)
@@ -515,7 +515,7 @@ export CUDA_VISIBLE_DEVICES=0
 
 
 python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
--src bpe_zh/test.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-noise-en.pred.atok
+-src bpe_zh/swap.zh.txt.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-noise-en.pred.atok
 
 # STEP 28 - Translate noisy text (Chinese -> English)
 
@@ -529,7 +529,7 @@ BLEU = 2.83 (without BPE on test file, after tokenizaten)
 
 multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en5.pred.atok
 
-BLEU = 22.58 (with BPE on test file, after tokenizaten)
+BLEU =11.90 (with BPE on test file, after tokenization).
 
 
 # STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
