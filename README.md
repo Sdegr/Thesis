@@ -10,12 +10,12 @@ Description: In this research, two Transformer models in combination with the us
 - The Stanford Segmenter
 - OpenNMT-py
 - A Python virtual environment containing: \
- (pip install) --upgrade pip \
- (pip install) torch \
- (pip install) torchvision \
- (pip install) torchtext \
- (pip install) configargparse
-- A script to create synthetic noise (swap_del.py)
+ the latest version of pip \
+ the latest version of torch \
+ the latest version of torchvision \
+ the latest version of torchtext \
+ the latest version of configargparse
+- Thesis/swap_del.py
 - Perl's multi-bleu
 
 
@@ -31,10 +31,15 @@ The corpora (containing training/dev/test) can be found in my thesis repository.
 Thesis/dutch-english\
 Thesis/chinese-english
 
-NOTE: it is highly recommended to create clear folders so that newly obtained files are stored correctly after every step. \
-So that, if a mistakes are made, they can easily be corrected. \
-At the beginning of this research this has not been done correctly, this is why some files/models have weird names \
-or are not stored within a folder (/).
+NOTE: it is highly recommended to create clear folders so that newly obtained files are stored correctly after every \
+step. So that, if a mistakes are made, they can easily be corrected. At the beginning of this research this has \
+not been done correctly, this is why some files/models have weird names  or are not stored within a folder (/). \
+At some point in this research this has been done correctly since a total of more than 7 models have been trained. \
+Chinese -> English (with BPE, without BPE, with Stanford Segmenter, with Moses Tokenizer). \
+Dutch -> English (with BPE, without BPE) \
++ some wrongly trained models.
+
+
 
 
 # STEP 2 - Cleaning data (Dutch -> English)
@@ -447,13 +452,13 @@ to find these errors manually..
 
 
 
-# STEP 21 - Preprocess (Chinese -> English)
+# STEP 23 - Preprocess (Chinese -> English)
 
 ```
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_data preprocessed2 -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess2
 ```
 
-# STEP 22 - Creating a Batch File (Chinese -> English)
+# STEP 24 - Creating a Batch File (Chinese -> English)
 
 ```
 #!/bin/bash 
@@ -490,77 +495,87 @@ python  OpenNMT-py/train.py -data preprocessed2 -save_model train_zh/zh-en_model
         
 ```
 
-# STEP 23 - Training (Chinese -> English)
+# STEP 25 - Training (Chinese -> English)
 
+```
 sbatch script-zh.sh
+```
 
-# STEP 24 - Create a batch file (Chinese -> English)
+# STEP 26 - Create a batch file (Chinese -> English)
 
-\#!/bin/bash \
-\#SBATCH --job-name="zh-en" \
-\#SBATCH --time=09:15:00 \
-\#SBATCH --ntasks=1 \
-\#SBATCH --mem=10GB \
-\#SBATCH --partition=gpu \
-\#SBATCH --gres=gpu:v100:1 \
-\#SBATCH --mail-type=ALL \
-\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+```
+#!/bin/bash 
+#SBATCH --job-name="zh-en" 
+#SBATCH --time=09:15:00 
+#SBATCH --ntasks=1 
+#SBATCH --mem=10GB 
+#SBATCH --partition=gpu 
+#SBATCH --gres=gpu:v100:1 
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
 
-source thesis-env/bin/activate \
-module load Python \
-\# pip install --upgrade pip \
-\# pip install torch \
-\# pip install torchvision \
-\# pip install torchtext \
-\# pip install configargparse \
-\# pip install OpenNMT-py 
+source thesis-env/bin/activate 
+module load Python 
+# pip install --upgrade pip 
+# pip install torch 
+# pip install torchvision 
+# pip install torchtext 
+# pip install configargparse 
+# pip install OpenNMT-py 
 
 
 export CUDA_VISIBLE_DEVICES=0
 
 
-python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
+python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_60000.pt \
 -src bpe_zh/test.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-en.pred.atok
 
+```
 
-# STEP 25 - Translate (Chinese -> English)
+# STEP 27 - Translate (Chinese -> English)
 
+```
 sbatch translate-zh.sh
+```
 
+# STEP 28 - Obtaining BLEU-scores for clean texts (Chinese -> English)
 
-# STEP 26 - Obtaining BLEU-scores for clean texts (Chinese -> English)
-
+```
 perl multi-bleu.perl BPE_zh_en/test.tgt < translate_zh/zh-en.pred.atok
+```
 
 BLEU =14.88
 
 
-# STEP 27 - Apply synthetic noise to test file by using the swap_del.py script (Chinese -> English)
+# STEP 29 - Apply synthetic noise to test file by using the swap_del.py script (Chinese -> English)
 
+```
 python3 swap_del.py test.zh.txt swap.zh.txt
+```
 
 swap_del.py is found under Thesis/swap_del.py
 
-# STEP 28 - Create a Batch File for noisy data (Chinese -> English)
+# STEP 30 - Create a Batch File for noisy data (Chinese -> English)
 
-\#!/bin/bash \
-\#SBATCH --job-name="zh-en-noise" \
-\#SBATCH --time=09:15:00 \
-\#SBATCH --ntasks=1 \
-\#SBATCH --mem=10GB \
-\#SBATCH --partition=gpu \
-\#SBATCH --gres=gpu:v100:1 \
-\#SBATCH --mail-type=ALL \
-\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+```
+#!/bin/bash 
+#SBATCH --job-name="zh-en-noise" 
+#SBATCH --time=09:15:00 
+#SBATCH --ntasks=1 
+#SBATCH --mem=10GB 
+#SBATCH --partition=gpu 
+#SBATCH --gres=gpu:v100:1 
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
 
-source thesis-env/bin/activate \
-module load Python \
-\# pip install --upgrade pip \
-\# pip install torch \
-\# pip install torchvision \
-\# pip install torchtext \
-\# pip install configargparse \
-\# pip install OpenNMT-py 
+source thesis-env/bin/activate 
+module load Python 
+# pip install --upgrade pip 
+# pip install torch 
+# pip install torchvision 
+# pip install torchtext 
+# pip install configargparse 
+# pip install OpenNMT-py 
 
 
 export CUDA_VISIBLE_DEVICES=0
@@ -569,22 +584,28 @@ export CUDA_VISIBLE_DEVICES=0
 python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
 -src bpe_zh/swap.zh.txt.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-noise-en.pred.atok
 
-# STEP 28 - Translate noisy text (Chinese -> English)
-
+```
+# STEP 31 - Translate noisy text (Chinese -> English)
+```
 sbatch translate-noise-zh.sh
+```
 
-# STEP 29 - Obtain BLEU-score for noisy text (Chinese -> English)
+# STEP 32 - Obtain BLEU-score for noisy text (Chinese -> English)
 
+```
 perl multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en.pred.atok
+```
 
 BLEU = 2.83 (without BPE on test file, after tokenizaten)
 
+```
 multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en5.pred.atok
+```
 
 BLEU =11.90 (with BPE on test file, after tokenization).
 
+# STEP 33 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
-# STEP 30 - Compare Dutch -> English BLEU-score with Chinese -> English BLEU-score
 
 
 
