@@ -691,9 +691,9 @@ BLEU = 11.90 (on noise, with BPE on test file).
 # Remark:
 
 It is highly recommended to store files with correct file names and in seperate folders after each step. \
-(- what I did not do at the beginning and resulted in a lot of frustration) \
+- I did not do this at the beginning of this research and this resulted in a lot of frustration \
 Generally, all the files in a step are based on the previous step. \
-With basic programming knowledge you should be able to figure this out.\
+With basic programming knowledge you should be able to figure this out.
 
 
 
