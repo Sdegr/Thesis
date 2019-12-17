@@ -1,5 +1,5 @@
 # Bachelor Thesis Sil de Graaf.
-Training two Transformer models in combination with the use of BPE with NL-EN and ZH-EN. Investigate which of the two source languages (Dutch vs Chinese) is more brittle to synthetic noise.
+Description: In this research, two Transformer models in combination with the use of BPE with NL-EN and ZH-EN are trained and testen. It is investigated wheter Dutch or Chinese is more brittle to synthetic noise as source language.
 
 
 # Requirements
@@ -125,15 +125,20 @@ $ python3
 ```
 # STEP 4 - Tokenization (Dutch -> English)
 
-wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl \
-wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.en \
+```
+wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/tokenizer/tokenizer.perl 
+wget https://raw.githubusercontent.com/moses-smt/mosesdecoder/master/scripts/share/nonbreaking_prefixes/nonbreaking_prefix.en
 
-$ perl tokenizer.perl -l en -q < train.en.txt > train.en.tok \
-$ perl tokenizer.perl -l en -q < train.nl.txt > train.nl.tok \
-$ perl tokenizer.perl -l en -q < test.nl.txt > test.nl.tok \
-$ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok \
-$ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok \
+```
+
+```
+$ perl tokenizer.perl -l en -q < train.en.txt > train.en.tok 
+$ perl tokenizer.perl -l en -q < train.nl.txt > train.nl.tok 
+$ perl tokenizer.perl -l en -q < test.nl.txt > test.nl.tok 
+$ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok 
+$ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok 
 $ perl tokenizer.perl -l en -q < dev.nl.txt > dev.nl.tok 
+```
 
 # STEP 5 - Get access to a GPU
 
@@ -143,65 +148,76 @@ The High-Performance Computing (HPC) cluster from the University of Groningen is
 
 In order to perform steps 8,9,10 and 11, Github had to be cloned to Peregrine.
 
+```
 git clone https://github.com/OpenNMT/OpenNMT
+```
 
 # STEP 7 - Creating a Python virtual environment
 
 Because of restrictions on Peregrine, a Python virtual environment had to be created in order to install the correct modules.
 
-* Create the virtual environment: \
+* Create the virtual environment: 
+```
 python3 -m venv thesis-env 
-* Activate the virtual environment: \
+```
+* Activate the virtual environment: 
+```
 source thesis-env/bin/activate
-
+```
 In the virtual environment install the following modules.
 
- pip install --upgrade pip \
- pip install torch \
- pip install torchvision \
- pip install torchtext \
+```
+ pip install --upgrade pip 
+ pip install torch 
+ pip install torchvision 
+ pip install torchtext
  pip install configargparse
-
+ 
+```
 
 # STEP 8 - Applying BPE (Dutch -> English)
 
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.nl.tok > bpe-codes.src \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/train.nl.tok > train.src \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/dev.nl.tok > valid.src \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/test.nl.tok > test.src \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.en.tok > bpe-codes.tgt \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/test.en.tok > test.tgt \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/dev.en.tok > valid.tgt \
+```
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.nl.tok > bpe-codes.src 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/train.nl.tok > train.src 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/dev.nl.tok > valid.src 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/nl-en/test.nl.tok > test.src 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.en.tok > bpe-codes.tgt 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/test.en.tok > test.tgt 
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/dev.en.tok > valid.tgt 
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/nl-en/train.en.tok > train.tgt
-
+```
 
 # STEP 9 - Preprocess the data (Dutch -> English)
 
+```
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_dat
 a preprocessed -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess
+```
 
-# STEP 10 - Creating a Batch File (Dutch -> English)
+# STEP 10 - Creating a training Batch File (Dutch -> English)
 
-\#!/bin/bash \
-\#SBATCH --job-name="nl-en" \
-\#SBATCH --time=08:30:00 \
-\#SBATCH --ntasks=1 \
-\#SBATCH --mem=10GB \
-\#SBATCH --partition=gpu \
-\#SBATCH --gres=gpu:v100:1 \
-\#SBATCH --mail-type=ALL \
-\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl 
+```
+#!/bin/bash 
+#SBATCH --job-name="nl-en" 
+#SBATCH --time=10:00:00 
+#SBATCH --ntasks=1 
+#SBATCH --mem=10GB 
+#SBATCH --partition=gpu 
+#SBATCH --gres=gpu:v100:1 
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl 
 
-source thesis-env/bin/activate \
-module load Python \
-\# pip install --upgrade pip \
-\# pip install torch \
-\# pip install torchvision \
-\# pip install torchtext \
-\# pip install configargparse \
-\# pip install OpenNMT-py \
+source thesis-env/bin/activate 
+module load Python 
+# pip install --upgrade pip 
+# pip install torch 
+# pip install torchvision 
+# pip install torchtext 
+# pip install configargparse 
+# pip install OpenNMT-py 
 
-export CUDA_VISIBLE_DEVICES=0 \
+export CUDA_VISIBLE_DEVICES=0 
 
 python  OpenNMT-py/train.py -data pre_NL/preprocessed -save_model train_NL/NL-en_model \
         -layers 6 -rnn_size 512 -word_vec_size 512 -transformer_ff 2048 -heads 8  \
@@ -212,31 +228,33 @@ python  OpenNMT-py/train.py -data pre_NL/preprocessed -save_model train_NL/NL-en
         -max_grad_norm 0 -param_init 0  -param_init_glorot \
         -label_smoothing 0.1 -valid_steps 10000 -save_checkpoint_steps 10000 \
         -log_file logs/NL/log.train -world_size 1 -gpu_ranks 0
-        
+```
+
 # STEP 11 - Training (Dutch -> English)
 
 sbatch script-nl.sh
 
-# STEP 12 - Create a Batch File (Dutch -> English)
+# STEP 12 - Create a translate Batch File (Dutch -> English)
 
-#!/bin/bash\
-\#SBATCH --job-name="translate-nl-en"\
-\#SBATCH --time=00:10:00\
-\#SBATCH --ntasks=1\
-\#SBATCH --mem=10GB\
-\#SBATCH --partition=gpu\
-\#SBATCH --gres=gpu:v100:1\
-\#SBATCH --mail-type=ALL\
-\#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
+```
+#!/bin/bash
+#SBATCH --job-name="translate-nl-en"
+#SBATCH --time=00:10:00
+#SBATCH --ntasks=1
+#SBATCH --mem=10GB
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:v100:1
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=S.M.de.Graaf.3@student.rug.nl
 
-source thesis-env/bin/activate\
-module load Python\
-\# pip install --upgrade pip\
-\# pip install torch\
-\# pip install torchvision\
-\# pip install torchtext\
-\# pip install configargparse\
-\# pip install OpenNMT-py
+source thesis-env/bin/activate
+module load Python
+# pip install --upgrade pip
+# pip install torch
+# pip install torchvision
+# pip install torchtext
+# pip install configargparse
+# pip install OpenNMT-py
 
 
 export CUDA_VISIBLE_DEVICES=0
@@ -244,6 +262,7 @@ export CUDA_VISIBLE_DEVICES=0
 python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt \
 -src test.src -tgt test.tgt -replace_unk -output nl-en3.pred.atok
 
+```
 
 # STEP 13 - Translate (Dutch -> English)
 
