@@ -564,7 +564,7 @@ sbatch script-zh.sh
 ```
 #!/bin/bash 
 #SBATCH --job-name="zh-en" 
-#SBATCH --time=09:15:00 
+#SBATCH --time=00:15:00 
 #SBATCH --ntasks=1 
 #SBATCH --mem=10GB 
 #SBATCH --partition=gpu 
@@ -690,7 +690,10 @@ BLEU = 11.90 (on noise, with BPE on test file).
 
 # Remark:
 
-It is highly recommended to store files with correct file names and in seperate folders after each step.
+It is highly recommended to store files with correct file names and in seperate folders after each step. \
+(- what I did not do at the beginning and resulted in a lot of frustration) \
+Generally, all the files in a step are based on the previous step. \
+With basic programming knowledge you should be able to figure this out.\
 
 
 
