@@ -21,16 +21,17 @@ Description: In this research, two Transformer models in combination with the us
 
 # STEP 1 - Obtaining data
 
-Two corpora are used for this thesis. The first corpus is a Dutch -> English corpus and the other corpus \
+Two  bilingual corpora are used for this thesis. The first corpus is a Dutch -> English corpus and the other corpus \
 is a Chinese -> English corpus. 
 These corpora are downloaded from;
 
 https://wit3.fbk.eu/mt.php?release=2014-01
 
-For both corpora, the test set from 2012 Ted Talks is used.
-
 An example of a corpus used for this thesis (containing training/dev/test) can be found in my thesis repository. \
 Thesis/dutch-english
+
+NOTE: For both models, the test set from 2012 is used. \
+NOTE: Somewhere in this research the development sets are renamed to validation sets (valid.src/valid.tgt).
 
 
 # STEP 2 - Cleaning data (Dutch -> English)
