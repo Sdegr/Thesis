@@ -282,13 +282,13 @@ BLEU = 31.22
 
 
 
-# STEP 15 - Apply synthetic noise to the Dutch test file by using the swap_del.py script (Dutch -> English)
+# STEP 15 - Apply synthetic noise to the Dutch test file by using the swap_del.py script created for this research (Dutch -> English)
 
 ```
 python3 swap_del.py test.nl.txt swap.nl.txt
 ```
 
-NOTE: First apply noise, then tokenize and then apply BPE again.
+NOTE: First apply noise, then tokenize and then apply BPE again. \
 Test with and without BPE.
 
 swap_del.py is found under Thesis/swap_del.py
