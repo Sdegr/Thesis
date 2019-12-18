@@ -27,9 +27,10 @@ These corpora are downloaded from;
 
 https://wit3.fbk.eu/mt.php?release=2014-01
 
-The corpora (containing training/dev/test) can be found in my thesis repository. \
-Thesis/dutch-english\
-Thesis/chinese-english
+For both corpora, the test set from 2012 Ted Talks is used.
+
+An example of a corporus used for this thesis (containing training/dev/test) can be found in my thesis repository. \
+Thesis/dutch-english
 
 
 # STEP 2 - Cleaning data (Dutch -> English)
