@@ -365,7 +365,7 @@ if __name__=='__main__':
 Make another batch file as in STEP 12 but change; '-src <oldfilename>' to, '-src <newfilename>'. \
 and change; '-output <oldfilename>' to, '-output <newfilename>'. Rename your Batch File.
 
-Repeat step 13 with your name Batch File.
+Repeat step 13 with your newly named Batch File.
  
 
 # STEP 17 - Obtaining BLEU-scores for noisy texts (Dutch -> English)
@@ -691,7 +691,7 @@ BLEU = 11.90 (on noise, with BPE on test file).
 # Remark:
 
 It is highly recommended to store files with correct file names and in separate folders after each step. \
-- I did not do this at the beginning of this research and this resulted in a lot of frustration \
+I did not do this at the beginning of this research and this resulted in a lot of frustration. \
 Generally, all the files in a step are based on the previous step. \
 With basic programming knowledge, you should be able to figure this out.
 
