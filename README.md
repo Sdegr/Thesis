@@ -191,7 +191,7 @@ In the virtual environment install the following modules.
 
 ```
 python OpenNMT-py/preprocess.py -train_src train.src -train_tgt train.tgt -valid_src valid.src -valid_tgt valid.tgt -save_dat
-a preprocessed -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess
+a pre_NL/preprocessed -src_seq_length 100 -tgt_seq_length 100 -seed 100 -log_file log.preprocess
 ```
 
 # STEP 10 - Creating a training Batch File (Dutch -> English)
@@ -258,7 +258,7 @@ module load Python
 
 export CUDA_VISIBLE_DEVICES=0
 
-python OpenNMT-py/translate.py -gpu 0 -model nl-en_model_step_60000.pt \
+python OpenNMT-py/translate.py -gpu 0 -model train_NL/NL-en_model_step_60000.pt \
 -src test.src -tgt test.tgt -replace_unk -output nl-en3.pred.atok
 
 ```
@@ -501,11 +501,11 @@ to find these errors manually..
 # STEP 22 - Apply BPE (Chinese -> English)
 
 ```
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.nl.tok > bpe-codes.src \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.src > bpe-codes.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/train.src > train.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/dev.src > valid.src \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.src < OpenNMT-py/zh-en/test.src > test.src \
-(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/nl-en/train.tgt > bpe-codes.tgt \
+(thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/learn_bpe.py -s 40000 < OpenNMT-py/zh-en/train.tgt > bpe-codes.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/test.tgt > test.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/valid.tgt > valid.tgt \
 (thesis-env) [s2615703@pg-gpu ~]$ OpenNMT-py/tools/apply_bpe.py -c bpe-codes.tgt < OpenNMT-py/zh-en/train.tgt > train.tgt
@@ -564,7 +564,7 @@ sbatch script-zh.sh
 
 ```
 #!/bin/bash 
-#SBATCH --job-name="zh-en" 
+#SBATCH --job-name="translate-zh-en" 
 #SBATCH --time=00:15:00 
 #SBATCH --ntasks=1 
 #SBATCH --mem=10GB 
@@ -586,7 +586,7 @@ module load Python
 export CUDA_VISIBLE_DEVICES=0
 
 
-python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_60000.pt \
+python OpenNMT-py/translate.py -gpu 0 -model train_zh/zh-en_model_step_20000.pt \
 -src bpe_zh/test.src -tgt bpe_zh/test.tgt -replace_unk -output translate_zh/zh-en.pred.atok
 
 ```
