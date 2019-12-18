@@ -362,8 +362,8 @@ if __name__=='__main__':
 
 # STEP 16
 
-Make another batch file as in STEP 12 but change; '-src <oldfilename>' to, '-src <newfilename>'. \
-and change; '-output <oldfilename>' to, '-output <newfilename>'. Rename your Batch File.
+Make another batch file as in STEP 12 but change; '-src oldfilename' to, '-src newfilename'. \
+and change; '-output oldfilename' to, '-output newfilename'. Rename your Batch File.
 
 Repeat step 13 with your newly named Batch File.
  
