@@ -476,6 +476,7 @@ $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok
 ```
 Note: not recommended, to use the Moses Tokenizer for Chinese!
 
+Download the Stanford Segmenter.
 
 Use the following code to tokenize the Chinese files with the Stanford Segmenter.
 
