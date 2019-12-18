@@ -29,7 +29,7 @@ https://wit3.fbk.eu/mt.php?release=2014-01
 
 For both corpora, the test set from 2012 Ted Talks is used.
 
-An example of a corporus used for this thesis (containing training/dev/test) can be found in my thesis repository. \
+An example of a corpus used for this thesis (containing training/dev/test) can be found in my thesis repository. \
 Thesis/dutch-english
 
 
