@@ -1,5 +1,5 @@
 # Bachelor Thesis Sil de Graaf.
-Description: In this research, two Transformer models in combination with the use of BPE with NL-EN and ZH-EN are trained and tested. It is investigated wheter Dutch *or* Chinese is more brittle to synthetic noise as source language.
+Description: In this research, two Transformer models in combination with the use of BPE with NL-EN and ZH-EN are trained and tested. It is investigated whether Dutch *or* Chinese is more brittle to synthetic noise as source language.
 
 
 # Requirements
@@ -474,7 +474,7 @@ $ perl tokenizer.perl -l en -q < test.en.txt > test.en.tok
 $ perl tokenizer.perl -l en -q < dev.en.txt > dev.en.tok 
 
 ```
-Note: not recommended, to use the Moses tokenizer for Chinese!
+Note: not recommended, to use the Moses Tokenizer for Chinese!
 
 
 Use the following code to tokenize the Chinese files with the Stanford Segmenter.
@@ -487,7 +487,7 @@ Use the following code to tokenize the Chinese files with the Stanford Segmenter
 
 NOTE: There are three errors in the train.en file. If a combination of the \
 Stanford Segmenter (for Chinese) and Moses Tokenizer (for English) is used. \
-This can be solved by tokenizing the train.en file with the mozes tokenizer. \
+This can be solved by tokenizing the train.en file with the Mozes Tokenizer. \
 After this, search for lines; 12636, 30908 and 39265 and removing these exact lines \
 before STEP 17. (I only wrote down the number of the lines after I tokenized so the \
 lines to be deleted have another number, but you should be able to find them with the instructions above. \
@@ -665,7 +665,7 @@ multi-bleu.perl bpe_zh/test.tgt < translate_zh/zh-noise-en5.pred.atok
 
 BLEU = 11.90 (with BPE on test file, after tokenization).
 
-# STEp 33 - Compare BLEU-score obtained in step 28 with BLEU-scores obtained in STEP 32
+# STEP 33 - Compare BLEU-score obtained in step 28 with BLEU-scores obtained in STEP 32
 
 # STEP 34 - Compare Dutch -> English BLEU-scores with Chinese -> English BLEU-scores
 
@@ -690,10 +690,10 @@ BLEU = 11.90 (on noise, with BPE on test file).
 
 # Remark:
 
-It is highly recommended to store files with correct file names and in seperate folders after each step. \
+It is highly recommended to store files with correct file names and in separate folders after each step. \
 - I did not do this at the beginning of this research and this resulted in a lot of frustration \
 Generally, all the files in a step are based on the previous step. \
-With basic programming knowledge you should be able to figure this out.
+With basic programming knowledge, you should be able to figure this out.
 
 
 
