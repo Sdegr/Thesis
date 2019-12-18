@@ -27,7 +27,7 @@ These corpora are downloaded from;
 
 https://wit3.fbk.eu/mt.php?release=2014-01
 
-An example of a corpus used for this thesis (containing training/dev/test) can be found in my thesis repository. \
+As am example, the Dutch to English corpus used for this thesis (also containing clean_data, tokenized_data, bpe_data) can be found in my thesis repository. \
 Thesis/dutch-english
 
 NOTE: For both models, the test set from 2012 is used. \
